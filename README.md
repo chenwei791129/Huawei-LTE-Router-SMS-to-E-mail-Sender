@@ -10,7 +10,7 @@ Tested on:
 1. copy .env.example to .env
 ```console
 $ cp .env.example .env
-$ vim .env.example
+$ vim .env
 ```
 
 2. just run it!
