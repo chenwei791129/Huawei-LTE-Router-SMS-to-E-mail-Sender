@@ -2,12 +2,19 @@
 
 The python script can help you read your sms from e-mail box.
 
+Tested on:
+* HUAWEI B525s-65a
+
 ## How to use
 
-- copy .env.example to .env
+1. copy .env.example to .env
 ```console
 $ cp .env.example .env
 $ vim .env.example
+```
+
+2. just run it!
+```console
 $ python3 check-sms.py
 ```
 
