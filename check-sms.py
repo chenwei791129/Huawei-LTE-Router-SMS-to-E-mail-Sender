@@ -48,6 +48,8 @@ while True:
         if int(sms['Messages']['Message']['Smstat']) == 1:
             # Logout
             client.user.logout()
+            #Inspection interval(second)
+            time.sleep(DELAY_SECOND)
             continue
 
         # Find a new SMS, go send e-mail！
@@ -77,5 +79,3 @@ while True:
             print('ID:{} from {} failed to send！ \r\nError message：\r\n{}'.format(sms['Messages']['Message']['Index'], sms['Messages']['Message']['Phone'], e))
     except Exception as e:
         print('Router connection failed! Please check the settings. \r\nError message：\r\n{}'.format(e))
-    #Inspection interval(second)
-    time.sleep(DELAY_SECOND)
