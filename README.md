@@ -38,7 +38,7 @@ $ docker run -e HUAWEI_ROUTER_PASSWORD=<password> -e GMAIL_ACCOUNT=<gmail-accoun
 
 ## Related Projects
 
-- [theskumar/python-dotenv](https://github.com/theskumar/python-dotenv)
+- [theskumar/python-dotenv](https://github.com/theskumar/python-dotenv) (used for non-docker environment)
 - [Salamek/huawei-lte-api](https://github.com/Salamek/huawei-lte-api)
 
 ## License
