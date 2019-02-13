@@ -42,6 +42,8 @@ $ docker run -e HUAWEI_ROUTER_PASSWORD=<password> -e GMAIL_ACCOUNT=<gmail-accoun
 * `HUAWEI_ROUTER_IP_ADDRESS` Huawei router IP address (default: 192.168.8.1)
 * `HUAWEI_ROUTER_ACCOUNT` Huawei router login account (default: admin)
 * `DELAY_SECOND` Waiting seconds for each check (default: 10)
+* `LOCALE` Set lang (default: en_US, support en_US, zh_TW, zh_HK, zh_CN)
+
 
 ## Related Projects
 

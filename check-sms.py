@@ -2,6 +2,18 @@ import os
 import smtplib
 import json
 import time
+import gettext
+
+lang = {
+    'zh_TW': "zh_TW",
+    'zh_HK': "zh_HK",
+    'zh_CN': "zh_CN",
+    'en_US': "en_US",
+}
+SET_LANG = os.getenv("LOCALE")
+CURRUNT_LOCALE = lang.get(SET_LANG, "en")
+t = gettext.translation('messages', 'locale', [CURRUNT_LOCALE])
+_ = t.gettext
 
 # check if in docker
 def runningInDocker():
@@ -20,12 +32,12 @@ if not runningInDocker():
     try:
         import huawei_lte_api
     except ImportError:
-        print('Trying to Install required module: huawei_lte_api\r\n')
+        print(_('Trying to Install required module: huawei_lte_api'))
         os.system('pip install huawei_lte_api')
     try:
         import dotenv
     except ImportError:
-        print('Trying to Install required module: python-dotenv\r\n')
+        print(_('Trying to Install required module: python-dotenv'))
         os.system('pip install python-dotenv')
     from dotenv import load_dotenv
     load_dotenv()
@@ -66,12 +78,12 @@ while True:
             continue
 
         # Find a new SMS, go send e-mail！
-        print('{} Find a new SMS ID:{}！ from {}'.format(sms['Messages']['Message']['Date'], sms['Messages']['Message']['Index'], sms['Messages']['Message']['Phone']))
+        print(_('{Date} Find a new SMS ID:{Message_Index}! from {Phone_Number}').format(Date=sms['Messages']['Message']['Date'], Message_Index=sms['Messages']['Message']['Index'], Phone_Number=sms['Messages']['Message']['Phone']))
 
         # send e-mail
         msg = MIMEMultipart()
-        msg['Subject'] = '您有一則簡訊來自 %s' % sms['Messages']['Message']['Phone']
-        body = '訊息日期： {}\r\n簡訊內容：\r\n {}'.format(sms['Messages']['Message']['Date'], sms['Messages']['Message']['Content'])
+        msg['Subject'] = _('You have a message from {Phone_Number}').format(Phone_Number=sms['Messages']['Message']['Phone'])
+        body = _('Message date:{Date}\r\nMessage content：\r\n {Content}').format(Date=sms['Messages']['Message']['Date'], Content=sms['Messages']['Message']['Content'])
         msg.attach(MIMEText(body, 'plain'))
 
         try:
@@ -82,13 +94,13 @@ while True:
             server.login(GMAIL_ACCOUNT, GMAIL_PASSWORD)
             server.sendmail(GMAIL_ACCOUNT, MAIL_RECIPIENT, msg.as_string())
             server.quit()
-            print('ID:{} from {} was successfully sent！'.format(sms['Messages']['Message']['Index'], sms['Messages']['Message']['Phone']))
+            print(_('ID:{Message_Index} from {Phone_Number} was successfully sent!').format(Message_Index=sms['Messages']['Message']['Index'], Phone_Number=sms['Messages']['Message']['Phone']))
             # Set the SMS status was read
             client.sms.set_read(int(sms['Messages']['Message']['Index']))
             # Logout
             client.user.logout()
         except Exception as e:
             client.user.logout()
-            print('ID:{} from {} failed to send！ \r\nError message：\r\n{}'.format(sms['Messages']['Message']['Index'], sms['Messages']['Message']['Phone'], e))
+            print(_('ID:{Message_Index} from {Phone_Number} failed to send! \r\nError message:\r\n{error_msg}').format(Message_Index=sms['Messages']['Message']['Index'], Phone_Number=sms['Messages']['Message']['Phone'], error_msg=e))
     except Exception as e:
-        print('Router connection failed! Please check the settings. \r\nError message：\r\n{}'.format(e))
+        print(_('Router connection failed! Please check the settings. \r\nError message:\r\n{error_msg}').format(error_msg=e))
