@@ -12,7 +12,7 @@ if you success use for other huawei router, you can feedback for me.
 1. Find the unread SMS
 2. Send the SMS context via email
 3. Set has been read status for this SMS
-4. loop to step 1
+4. Loop to step 1
 
 ## How to use
 
