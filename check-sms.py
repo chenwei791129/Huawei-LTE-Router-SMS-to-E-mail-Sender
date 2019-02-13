@@ -3,17 +3,32 @@ import smtplib
 import json
 import time
 
-# Test and inatall the required module
-try:
-    import huawei_lte_api
-except ImportError:
-    print('Trying to Install required module: huawei_lte_api\r\n')
-    os.system('pip install huawei_lte_api')
-try:
-    import dotenv
-except ImportError:
-    print('Trying to Install required module: python-dotenv\r\n')
-    os.system('pip install python-dotenv')
+# check if in docker
+def runningInDocker():
+    try:
+        with open('/proc/self/cgroup', 'r') as procfile:
+            for line in procfile:
+                fields = line.strip().split('/')
+                if fields[1] == 'docker':
+                    return True
+    except:
+        pass
+    return False
+
+# Test and inatall the required module and load dotenv if not in docker
+if not runningInDocker():
+    try:
+        import huawei_lte_api
+    except ImportError:
+        print('Trying to Install required module: huawei_lte_api\r\n')
+        os.system('pip install huawei_lte_api')
+    try:
+        import dotenv
+    except ImportError:
+        print('Trying to Install required module: python-dotenv\r\n')
+        os.system('pip install python-dotenv')
+    from dotenv import load_dotenv
+    load_dotenv()
 
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -22,16 +37,14 @@ from huawei_lte_api.AuthorizedConnection import AuthorizedConnection
 from huawei_lte_api.Connection import Connection
 from huawei_lte_api.api.User import User
 from huawei_lte_api.enums.sms import BoxTypeEnum
-from dotenv import load_dotenv
 
 # load environment variable from .env file
-load_dotenv()
 HUAWEI_ROUTER_IP_ADDRESS = os.getenv("HUAWEI_ROUTER_IP_ADDRESS")
 HUAWEI_ROUTER_ACCOUNT = os.getenv("HUAWEI_ROUTER_ACCOUNT")
 HUAWEI_ROUTER_PASSWORD = os.getenv("HUAWEI_ROUTER_PASSWORD")
 GMAIL_ACCOUNT = os.getenv("GMAIL_ACCOUNT")
 GMAIL_PASSWORD = os.getenv("GMAIL_PASSWORD")
-MAIL_RECIPIENT = eval(os.getenv("MAIL_RECIPIENT"))
+MAIL_RECIPIENT = os.getenv("MAIL_RECIPIENT").split(",")
 DELAY_SECOND = int(os.getenv("DELAY_SECOND"))
 
 # Use infinite loop to check SMS
