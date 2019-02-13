@@ -23,13 +23,13 @@ $ python3 check-sms.py
 ## Via Docker
 ```console
 $ docker pull awei/huawei-lte-router-sms-to-email-sender
-$ docker run -e HUAWEI_ROUTER_PASSWORD=<password> -e GMAIL_ACCOUNT=<gmail-account> -e GMAIL_PASSWORD=<gmail-password> -e MAIL_RECIPIENT user@gmail.com -d awei/huawei-lte-router-sms-to-email-sender
+$ docker run -e HUAWEI_ROUTER_PASSWORD=<password> -e GMAIL_ACCOUNT=<gmail-account> -e GMAIL_PASSWORD=<gmail-password> -e MAIL_RECIPIENT <your-email-address> -d awei/huawei-lte-router-sms-to-email-sender
 ```
 ### Option Environment Variables
 * `HUAWEI_ROUTER_PASSWORD` Huawei router login password (example: 123456)
-* `GMAIL_ACCOUNT` gmail account for smtp login example: user@gmail.com
-* `GMAIL_PASSWORD` gmail password for smtp login example: P@ssw0rd
-* `MAIL_RECIPIENT` Comma separated recipient example: user1@livemail.tw,user2@gmail.com
+* `GMAIL_ACCOUNT` gmail account for smtp login (example: user@gmail.com)
+* `GMAIL_PASSWORD` gmail password for smtp login (example: P@ssw0rd)
+* `MAIL_RECIPIENT` Comma separated recipient (example: user1@livemail.tw,user2@gmail.com)
 
 ### Option Environment Variables
 * `HUAWEI_ROUTER_IP_ADDRESS` Huawei router IP address (default: 192.168.8.1)
