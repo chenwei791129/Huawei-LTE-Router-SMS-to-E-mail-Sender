@@ -25,7 +25,7 @@ $ python3 check-sms.py
 $ docker pull awei/huawei-lte-router-sms-to-email-sender
 $ docker run -e HUAWEI_ROUTER_PASSWORD=<password> -e GMAIL_ACCOUNT=<gmail-account> -e GMAIL_PASSWORD=<gmail-password> -e MAIL_RECIPIENT <your-email-address> -d awei/huawei-lte-router-sms-to-email-sender
 ```
-### Option Environment Variables
+### Necessary Environment Variables
 * `HUAWEI_ROUTER_PASSWORD` Huawei router login password (example: 123456)
 * `GMAIL_ACCOUNT` gmail account for smtp login (example: user@gmail.com)
 * `GMAIL_PASSWORD` gmail password for smtp login (example: P@ssw0rd)
