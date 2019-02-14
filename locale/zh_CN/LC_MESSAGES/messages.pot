@@ -26,14 +26,14 @@ msgstr "{Date} 发现一则新讯息 编号：{Message_Index}！ 来自： {Phon
 msgid "ID:{Message_Index} from {Phone_Number} was successfully sent!"
 msgstr "编号：{Message_Index} 来自： {Phone_Number} 成功寄出！"
 
-msgid "ID:{Message_Index} from {Phone_Number} failed to send! \r\nError message:\r\n{error_msg}"
-msgstr "编号：{Message_Index} 来自： {Phone_Number} 寄送失败！ \r\n错误讯息：\r\n{error_msg}"
+msgid "ID:{Message_Index} from {Phone_Number} failed to send! \nError message:\n{error_msg}"
+msgstr "编号：{Message_Index} 来自： {Phone_Number} 寄送失败！ \n错误讯息：\n{error_msg}"
 
-msgid "Router connection failed! Please check the settings. \r\nError message:\r\n{error_msg}"
-msgstr "路由器连线失败！请检查设定。 \r\n错误讯息：\r\n{error_msg}"
+msgid "Router connection failed! Please check the settings. \nError message:\n{error_msg}"
+msgstr "路由器连线失败！请检查设定。 \n错误讯息：\n{error_msg}"
 
 msgid "You have a message from {Phone_Number}"
 msgstr "您有一则简讯来自 {Phone_Number}"
 
-msgid "Message date:{Date}\r\nMessage content:\r\n {Content}"
-msgstr "讯息日期： {Date}\r\n简讯内容：\r\n {Content}"
+msgid "Message date:{Date}\nMessage content:\n {Content}"
+msgstr "讯息日期： {Date}\n简讯内容：\n {Content}"

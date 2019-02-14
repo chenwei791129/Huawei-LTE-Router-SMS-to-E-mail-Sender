@@ -26,15 +26,15 @@ msgstr "{Date} Find a new SMS ID:{Message_Index}! from {Phone_Number}"
 msgid "ID:{Message_Index} from {Phone_Number} was successfully sent!"
 msgstr "ID:{Message_Index} from {Phone_Number} was successfully sent!"
 
-msgid "ID:{Message_Index} from {Phone_Number} failed to send! \r\nError message:\r\n{error_msg}"
-msgstr "ID:{Message_Index} from {Phone_Number} failed to send! \r\nError message:\r\n{error_msg}"
+msgid "ID:{Message_Index} from {Phone_Number} failed to send! \nError message:\n{error_msg}"
+msgstr "ID:{Message_Index} from {Phone_Number} failed to send! \nError message:\n{error_msg}"
 
-msgid "Router connection failed! Please check the settings. \r\nError message:\r\n{error_msg}"
-msgstr "Router connection failed! Please check the settings. \r\nError message:\r\n{error_msg}"
+msgid "Router connection failed! Please check the settings. \nError message:\n{error_msg}"
+msgstr "Router connection failed! Please check the settings. \nError message:\n{error_msg}"
 
 msgid "You have a message from {Phone_Number}"
 msgstr "You have a message from {Phone_Number}"
 
-msgid "Message date:{Date}\r\nMessage content:\r\n {Content}"
-msgstr "Message date:{Date}\r\nMessage content：\r\n {Content}"
+msgid "Message date:{Date}\nMessage content:\n {Content}"
+msgstr "Message date:{Date}\nMessage content：\n {Content}"
 
