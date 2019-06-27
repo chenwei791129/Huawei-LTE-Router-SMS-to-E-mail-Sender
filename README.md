@@ -1,5 +1,4 @@
 # Huawei LTE Router SMS to E-mail Sender
-[![This image on DockerHub](https://img.shields.io/docker/pulls/awei/huawei-lte-router-sms-to-email-sender.svg)](https://hub.docker.com/r/awei/huawei-lte-router-sms-to-email-sender/)
 
 The python script can help you read your sms from e-mail box.
 
@@ -29,6 +28,8 @@ $ python3 check-sms.py
 ```
 
 ## Via Docker
+[![This image on DockerHub](https://img.shields.io/docker/pulls/awei/huawei-lte-router-sms-to-email-sender.svg)](https://hub.docker.com/r/awei/huawei-lte-router-sms-to-email-sender/)
+
 [View on Docker Hub](https://hub.docker.com/r/awei/huawei-lte-router-sms-to-email-sender)
 ```console
 $ docker pull awei/huawei-lte-router-sms-to-email-sender
