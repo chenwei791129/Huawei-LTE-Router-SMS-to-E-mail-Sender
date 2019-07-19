@@ -32,7 +32,6 @@ $ python3 check-sms.py
 
 [View on Docker Hub](https://hub.docker.com/r/awei/huawei-lte-router-sms-to-email-sender)
 ```console
-$ docker pull awei/huawei-lte-router-sms-to-email-sender
 $ docker run -e HUAWEI_ROUTER_PASSWORD=<password> -e GMAIL_ACCOUNT=<gmail-account> -e GMAIL_PASSWORD=<gmail-password> -e MAIL_RECIPIENT=<your-email-address> -d awei/huawei-lte-router-sms-to-email-sender
 ```
 ### Necessary Environment Variables
