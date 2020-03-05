@@ -38,3 +38,5 @@ msgstr "You have a message from {Phone_Number}"
 msgid "Message date:{Date}\nMessage content:\n {Content}"
 msgstr "Message date:{Date}\nMessage content：\n {Content}"
 
+msgid "Session timeout, login again!"
+msgstr "Session timeout, login again!"

@@ -37,3 +37,6 @@ msgstr "您有一則簡訊來自 {Phone_Number}"
 
 msgid "Message date:{Date}\nMessage content:\n {Content}"
 msgstr "訊息日期： {Date}\n簡訊內容：\n {Content}"
+
+msgid "Session timeout, login again!"
+msgstr "登入狀態超時，重新登入！"

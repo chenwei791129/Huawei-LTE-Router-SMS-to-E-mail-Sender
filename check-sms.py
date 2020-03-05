@@ -1,8 +1,8 @@
 import os
 import smtplib
 import json
-import time
 import gettext
+import time
 
 lang = {
     'zh_TW': "zh_TW",
@@ -49,6 +49,7 @@ from huawei_lte_api.AuthorizedConnection import AuthorizedConnection
 from huawei_lte_api.Connection import Connection
 from huawei_lte_api.api.User import User
 from huawei_lte_api.enums.sms import BoxTypeEnum
+import huawei_lte_api.exceptions
 
 # load environment variable from .env file
 HUAWEI_ROUTER_IP_ADDRESS = os.getenv("HUAWEI_ROUTER_IP_ADDRESS")
@@ -59,6 +60,9 @@ GMAIL_PASSWORD = os.getenv("GMAIL_PASSWORD")
 MAIL_RECIPIENT = os.getenv("MAIL_RECIPIENT").split(",")
 DELAY_SECOND = int(os.getenv("DELAY_SECOND"))
 
+connection = None
+client = None
+
 # Use infinite loop to check SMS
 while True:
     try:
@@ -68,6 +72,14 @@ while True:
 
         # get first SMS(unread priority)
         sms = client.sms.get_sms_list(1, BoxTypeEnum.LOCAL_INBOX, 1, 0, 0, 1)
+        
+        # Skip this loop if no messages
+        if sms['Messages'] == None:
+            # Logout
+            client.user.logout()
+            #Inspection interval(second)
+            time.sleep(DELAY_SECOND)
+            continue
 
         # Skip this loop if the SMS was read
         if int(sms['Messages']['Message']['Smstat']) == 1:
@@ -100,7 +112,14 @@ while True:
             # Logout
             client.user.logout()
         except Exception as e:
-            client.user.logout()
+            try:
+                client.user.logout()
+            except Exception as e:
+                continue
             print(_('ID:{Message_Index} from {Phone_Number} failed to send! \nError message:\n{error_msg}').format(Message_Index=sms['Messages']['Message']['Index'], Phone_Number=sms['Messages']['Message']['Phone'], error_msg=e))
+    except huawei_lte_api.exceptions.ResponseErrorLoginRequiredException as e:
+        print(_('Session timeout, login again!'))
+    except huawei_lte_api.exceptions.LoginErrorAlreadyLoginException as e:
+        client.user.logout()
     except Exception as e:
         print(_('Router connection failed! Please check the settings. \nError message:\n{error_msg}').format(error_msg=e))
