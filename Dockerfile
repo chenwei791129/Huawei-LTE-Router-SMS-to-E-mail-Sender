@@ -2,7 +2,7 @@
 # Dockerfile for awei/huawei-lte-router-sms-to-email-sender
 #
 
-FROM python:3.7-alpine
+FROM python:3.8-alpine
 LABEL MAINTAINER AwEi
 
 ENV HUAWEI_ROUTER_IP_ADDRESS=192.168.8.1 \
