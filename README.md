@@ -3,6 +3,7 @@
 The python script can help you read your sms from e-mail box.
 
 Tested on:
+* HUAWEI B315s-22
 * HUAWEI B525s-65a
 
 if you success use for other huawei router, you can feedback for me.
