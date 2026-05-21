@@ -30,11 +30,11 @@ $ uv run check-sms.py
 ```
 
 ## Via Docker
-[![This image on DockerHub](https://img.shields.io/docker/pulls/awei/huawei-lte-router-sms-to-email-sender.svg)](https://hub.docker.com/r/awei/huawei-lte-router-sms-to-email-sender/)
 
-[View on Docker Hub](https://hub.docker.com/r/awei/huawei-lte-router-sms-to-email-sender)
+Pre-built images are published to GitHub Container Registry: [`ghcr.io/chenwei791129/huawei-lte-router-sms-to-e-mail-sender`](https://github.com/chenwei791129/Huawei-LTE-Router-SMS-to-E-mail-Sender/pkgs/container/huawei-lte-router-sms-to-e-mail-sender)
+
 ```console
-$ docker run -e HUAWEI_ROUTER_PASSWORD=<password> -e GMAIL_ACCOUNT=<gmail-account> -e GMAIL_PASSWORD=<gmail-password> -e MAIL_RECIPIENT=<your-email-address> -d awei/huawei-lte-router-sms-to-email-sender
+$ docker run -e HUAWEI_ROUTER_PASSWORD=<password> -e GMAIL_ACCOUNT=<gmail-account> -e GMAIL_PASSWORD=<gmail-password> -e MAIL_RECIPIENT=<your-email-address> -d ghcr.io/chenwei791129/huawei-lte-router-sms-to-e-mail-sender:latest
 ```
 ### Necessary Environment Variables
 * `HUAWEI_ROUTER_PASSWORD` Huawei router login password (example: 123456). Special characters such as `@`, `:`, `/`, `#`, `?`, `%`, and spaces are accepted as-is — the script URL-encodes them before talking to the router, so do not pre-encode the value yourself.
