@@ -6,6 +6,7 @@ import sys
 import time
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from urllib.parse import quote
 
 import huawei_lte_api.exceptions
 from dotenv import load_dotenv
@@ -53,8 +54,15 @@ client: Client | None = None
 try:
     while True:
         try:
-            # Establish a connection with authorized
-            connection = AuthorizedConnection("http://{}:{}@{}/".format(HUAWEI_ROUTER_ACCOUNT, HUAWEI_ROUTER_PASSWORD, HUAWEI_ROUTER_IP_ADDRESS))
+            # Establish a connection with authorized.
+            # URL-encode credentials so special chars (@, :, /, #, ?, %, space, ...) don't break urlparse.
+            connection = AuthorizedConnection(
+                "http://{}:{}@{}/".format(
+                    quote(HUAWEI_ROUTER_ACCOUNT, safe=""),
+                    quote(HUAWEI_ROUTER_PASSWORD, safe=""),
+                    HUAWEI_ROUTER_IP_ADDRESS,
+                )
+            )
             client = Client(connection)
 
             # get first SMS(unread priority)

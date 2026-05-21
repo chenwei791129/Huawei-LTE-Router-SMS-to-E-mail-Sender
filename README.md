@@ -37,9 +37,9 @@ $ uv run check-sms.py
 $ docker run -e HUAWEI_ROUTER_PASSWORD=<password> -e GMAIL_ACCOUNT=<gmail-account> -e GMAIL_PASSWORD=<gmail-password> -e MAIL_RECIPIENT=<your-email-address> -d awei/huawei-lte-router-sms-to-email-sender
 ```
 ### Necessary Environment Variables
-* `HUAWEI_ROUTER_PASSWORD` Huawei router login password (example: 123456)
+* `HUAWEI_ROUTER_PASSWORD` Huawei router login password (example: 123456). Special characters such as `@`, `:`, `/`, `#`, `?`, `%`, and spaces are accepted as-is — the script URL-encodes them before talking to the router, so do not pre-encode the value yourself.
 * `GMAIL_ACCOUNT` gmail account for smtp login (example: user@gmail.com)
-* `GMAIL_PASSWORD` gmail password for smtp login (example: P@ssw0rd)
+* `GMAIL_PASSWORD` gmail app password for smtp login (example: abcd efgh ijkl mnop)
 * `MAIL_RECIPIENT` Comma separated recipient (example: user1@livemail.tw,user2@gmail.com)
 
 ### Option Environment Variables
