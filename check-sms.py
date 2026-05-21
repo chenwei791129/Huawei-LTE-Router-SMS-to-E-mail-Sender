@@ -2,39 +2,13 @@ import os
 import smtplib
 import gettext
 import time
+import signal
+import sys
 
-SET_LANG = os.getenv('LOCALE')
-SUPPORTED_LOCALES = {'zh_TW', 'zh_HK', 'zh_CN', 'en_US'}
-CURRENT_LOCALE = SET_LANG if SET_LANG in SUPPORTED_LOCALES else 'en'
-t = gettext.translation('messages', 'locale', [CURRENT_LOCALE])
-_ = t.gettext
+from dotenv import load_dotenv
 
-# check if in docker
-def runningInDocker():
-    try:
-        with open('/proc/self/cgroup', 'r') as procfile:
-            for line in procfile:
-                fields = line.strip().split('/')
-                if fields[1] == 'docker':
-                    return True
-    except Exception:
-        pass
-    return False
-
-# Test and install the required module and load dotenv if not in docker
-if not runningInDocker():
-    try:
-        import huawei_lte_api
-    except ImportError:
-        print(_('Trying to Install required module: huawei_lte_api'))
-        os.system('pip install huawei_lte_api')
-    try:
-        import dotenv
-    except ImportError:
-        print(_('Trying to Install required module: python-dotenv'))
-        os.system('pip install python-dotenv')
-    from dotenv import load_dotenv
-    load_dotenv()
+# Load .env when present (no-op inside Docker or when the file is absent)
+load_dotenv()
 
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -42,6 +16,12 @@ from huawei_lte_api.Client import Client
 from huawei_lte_api.AuthorizedConnection import AuthorizedConnection
 from huawei_lte_api.enums.sms import BoxTypeEnum
 import huawei_lte_api.exceptions
+
+SET_LANG = os.getenv('LOCALE')
+SUPPORTED_LOCALES = {'zh_TW', 'zh_HK', 'zh_CN', 'en_US'}
+CURRENT_LOCALE = SET_LANG if SET_LANG in SUPPORTED_LOCALES else 'en'
+t = gettext.translation('messages', 'locale', [CURRENT_LOCALE])
+_ = t.gettext
 
 # load environment variable from .env file
 HUAWEI_ROUTER_IP_ADDRESS = os.getenv('HUAWEI_ROUTER_IP_ADDRESS')
@@ -52,67 +32,77 @@ GMAIL_PASSWORD = os.getenv('GMAIL_PASSWORD')
 MAIL_RECIPIENT = os.getenv('MAIL_RECIPIENT').split(',')
 DELAY_SECOND = int(os.getenv('DELAY_SECOND', '10'))
 
+
+def _handle_sigterm(signum, frame):
+    sys.exit(128 + signum)
+
+
+signal.signal(signal.SIGTERM, _handle_sigterm)
+
 connection = None
 client = None
 
 # Use infinite loop to check SMS
-while True:
-    try:
-        # Establish a connection with authorized
-        connection = AuthorizedConnection('http://{}:{}@{}/'.format(HUAWEI_ROUTER_ACCOUNT, HUAWEI_ROUTER_PASSWORD, HUAWEI_ROUTER_IP_ADDRESS))
-        client = Client(connection)
-
-        # get first SMS(unread priority)
-        sms = client.sms.get_sms_list(1, BoxTypeEnum.LOCAL_INBOX, 1, 0, 0, 1)
-
-        # Skip this loop if no messages
-        if sms['Messages'] is None:
-            client.user.logout()
-            continue
-
-        # huawei-lte-api >=1.6.10 returns a list even for a single message
-        message = sms['Messages']['Message'][0]
-
-        # Skip this loop if the SMS was read
-        if int(message['Smstat']) == 1:
-            client.user.logout()
-            continue
-
-        # Find a new SMS, go send e-mail！
-        print(_('{Date} Find a new SMS ID:{Message_Index}! from {Phone_Number}').format(Date=message['Date'], Message_Index=message['Index'], Phone_Number=message['Phone']))
-
-        # send e-mail
-        msg = MIMEMultipart()
-        msg['Subject'] = _('You have a message from {Phone_Number}').format(Phone_Number=message['Phone'])
-        body = _('Message date:{Date}\nMessage content：\n {Content}').format(Date=message['Date'], Content=message['Content'])
-        msg.attach(MIMEText(body, 'plain'))
-
+try:
+    while True:
         try:
-            with smtplib.SMTP('smtp.gmail.com', 587) as server:
-                server.ehlo()
-                server.starttls()
-                server.ehlo()
-                server.login(GMAIL_ACCOUNT, GMAIL_PASSWORD)
-                server.sendmail(GMAIL_ACCOUNT, MAIL_RECIPIENT, msg.as_string())
-            print(_('ID:{Message_Index} from {Phone_Number} was successfully sent!').format(Message_Index=message['Index'], Phone_Number=message['Phone']))
-            # Set the SMS status was read
-            client.sms.set_read(int(message['Index']))
-        except Exception as send_err:
-            print(_('ID:{Message_Index} from {Phone_Number} failed to send! \nError message:\n{error_msg}').format(Message_Index=message['Index'], Phone_Number=message['Phone'], error_msg=send_err))
-        finally:
+            # Establish a connection with authorized
+            connection = AuthorizedConnection('http://{}:{}@{}/'.format(HUAWEI_ROUTER_ACCOUNT, HUAWEI_ROUTER_PASSWORD, HUAWEI_ROUTER_IP_ADDRESS))
+            client = Client(connection)
+
+            # get first SMS(unread priority)
+            sms = client.sms.get_sms_list(1, BoxTypeEnum.LOCAL_INBOX, 1, 0, 0, 1)
+
+            # Skip this loop if no messages
+            if sms['Messages'] is None:
+                client.user.logout()
+                continue
+
+            # huawei-lte-api >=1.6.10 returns a list even for a single message
+            message = sms['Messages']['Message'][0]
+
+            # Skip this loop if the SMS was read
+            if int(message['Smstat']) == 1:
+                client.user.logout()
+                continue
+
+            # Find a new SMS, go send e-mail！
+            print(_('{Date} Find a new SMS ID:{Message_Index}! from {Phone_Number}').format(Date=message['Date'], Message_Index=message['Index'], Phone_Number=message['Phone']))
+
+            # send e-mail
+            msg = MIMEMultipart()
+            msg['Subject'] = _('You have a message from {Phone_Number}').format(Phone_Number=message['Phone'])
+            body = _('Message date:{Date}\nMessage content：\n {Content}').format(Date=message['Date'], Content=message['Content'])
+            msg.attach(MIMEText(body, 'plain'))
+
+            try:
+                with smtplib.SMTP('smtp.gmail.com', 587) as server:
+                    server.ehlo()
+                    server.starttls()
+                    server.ehlo()
+                    server.login(GMAIL_ACCOUNT, GMAIL_PASSWORD)
+                    server.sendmail(GMAIL_ACCOUNT, MAIL_RECIPIENT, msg.as_string())
+                print(_('ID:{Message_Index} from {Phone_Number} was successfully sent!').format(Message_Index=message['Index'], Phone_Number=message['Phone']))
+                # Set the SMS status was read
+                client.sms.set_read(int(message['Index']))
+            except Exception as send_err:
+                print(_('ID:{Message_Index} from {Phone_Number} failed to send! \nError message:\n{error_msg}').format(Message_Index=message['Index'], Phone_Number=message['Phone'], error_msg=send_err))
+            finally:
+                try:
+                    client.user.logout()
+                except Exception:
+                    pass
+        except huawei_lte_api.exceptions.ResponseErrorLoginRequiredException:
+            print(_('Session timeout, login again!'))
+        except huawei_lte_api.exceptions.LoginErrorAlreadyLoginException:
             try:
                 client.user.logout()
             except Exception:
                 pass
-    except huawei_lte_api.exceptions.ResponseErrorLoginRequiredException:
-        print(_('Session timeout, login again!'))
-    except huawei_lte_api.exceptions.LoginErrorAlreadyLoginException:
-        try:
-            client.user.logout()
-        except Exception:
-            pass
-    except Exception as e:
-        print(_('Router connection failed! Please check the settings. \nError message:\n{error_msg}').format(error_msg=e))
-    finally:
-        # Inspection interval(second)
-        time.sleep(DELAY_SECOND)
+        except Exception as e:
+            print(_('Router connection failed! Please check the settings. \nError message:\n{error_msg}').format(error_msg=e))
+        finally:
+            # Inspection interval(second)
+            time.sleep(DELAY_SECOND)
+except KeyboardInterrupt:
+    sys.exit(130)

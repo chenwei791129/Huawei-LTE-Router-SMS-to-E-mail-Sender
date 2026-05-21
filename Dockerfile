@@ -19,7 +19,7 @@ WORKDIR /home
 COPY check-sms.py check-sms.py
 COPY locale locale
 
-RUN pip install --no-cache-dir huawei_lte_api && \
+RUN pip install --no-cache-dir huawei_lte_api python-dotenv && \
     rm /home/locale/en/LC_MESSAGES/messages.pot && \
     rm /home/locale/en_US/LC_MESSAGES/messages.pot && \
     rm /home/locale/zh_CN/LC_MESSAGES/messages.pot && \

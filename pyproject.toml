@@ -1,0 +1,14 @@
+[project]
+name = "huawei-lte-sms-to-email"
+version = "0.1.0"
+description = "Forward unread SMS from a Huawei LTE router to email via Gmail SMTP."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.11"
+dependencies = [
+    "huawei-lte-api>=1.6.10",
+    "python-dotenv>=1.0.0",
+]
+
+[tool.uv]
+package = false

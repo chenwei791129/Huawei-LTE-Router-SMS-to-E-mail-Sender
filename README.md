@@ -23,9 +23,10 @@ $ cp .env.example .env
 $ vim .env
 ```
 
-2. just run it!
+2. install dependencies and run it with [uv](https://docs.astral.sh/uv/):
 ```console
-$ python3 check-sms.py
+$ uv sync
+$ uv run check-sms.py
 ```
 
 ## Via Docker
