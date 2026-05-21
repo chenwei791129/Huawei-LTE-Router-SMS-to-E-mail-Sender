@@ -12,3 +12,11 @@ dependencies = [
 
 [tool.uv]
 package = false
+
+[tool.ruff]
+# Generous limit accommodates inline gettext `.format(...)` templates.
+line-length = 200
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
