@@ -1,6 +1,6 @@
 [project]
 name = "huawei-lte-sms-to-email"
-version = "0.1.0"
+version = "1.0.0"
 description = "Forward unread SMS from a Huawei LTE router to email via Gmail SMTP."
 readme = "README.md"
 license = { text = "MIT" }
