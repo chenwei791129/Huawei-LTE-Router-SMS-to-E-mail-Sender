@@ -40,3 +40,6 @@ msgstr "讯息日期： {Date}\n简讯内容：\n {Content}"
 
 msgid "Session timeout, login again!"
 msgstr "会话超时，重新登入！"
+
+msgid "WARNING: HUAWEI_ROUTER_PASSWORD is using the factory default ({password}). Anyone on your network can log in to the router. Please change the router password and set HUAWEI_ROUTER_PASSWORD accordingly as soon as possible.\n"
+msgstr "警告：HUAWEI_ROUTER_PASSWORD 使用的是出厂默认值 ({password})，同一网段内任何人均可登录路由器。请尽快修改路由器密码并更新 HUAWEI_ROUTER_PASSWORD 设置。\n"

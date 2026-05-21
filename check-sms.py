@@ -39,13 +39,23 @@ t = gettext.translation("messages", "locale", [CURRENT_LOCALE])
 _ = t.gettext
 
 # load environment variables
+DEFAULT_HUAWEI_ROUTER_PASSWORD = "123456"
 HUAWEI_ROUTER_IP_ADDRESS = os.getenv("HUAWEI_ROUTER_IP_ADDRESS", "192.168.8.1")
 HUAWEI_ROUTER_ACCOUNT = os.getenv("HUAWEI_ROUTER_ACCOUNT", "admin")
-HUAWEI_ROUTER_PASSWORD = _required_env("HUAWEI_ROUTER_PASSWORD")
+HUAWEI_ROUTER_PASSWORD = os.getenv("HUAWEI_ROUTER_PASSWORD", DEFAULT_HUAWEI_ROUTER_PASSWORD)
 GMAIL_ACCOUNT = _required_env("GMAIL_ACCOUNT")
 GMAIL_PASSWORD = _required_env("GMAIL_PASSWORD")
 MAIL_RECIPIENT = _required_env("MAIL_RECIPIENT").split(",")
 DELAY_SECOND = int(os.getenv("DELAY_SECOND", "10"))
+
+if HUAWEI_ROUTER_PASSWORD == DEFAULT_HUAWEI_ROUTER_PASSWORD:
+    sys.stderr.write(
+        _(
+            "WARNING: HUAWEI_ROUTER_PASSWORD is using the factory default ({password}). "
+            "Anyone on your network can log in to the router. Please change the router password "
+            "and set HUAWEI_ROUTER_PASSWORD accordingly as soon as possible.\n"
+        ).format(password=DEFAULT_HUAWEI_ROUTER_PASSWORD)
+    )
 
 connection = None
 client: Client | None = None
