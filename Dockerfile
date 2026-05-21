@@ -2,7 +2,7 @@
 # Dockerfile for awei/huawei-lte-router-sms-to-email-sender
 #
 
-FROM python:3.14.3-alpine
+FROM ghcr.io/astral-sh/uv:python3.14-alpine
 LABEL MAINTAINER AwEi
 
 ENV HUAWEI_ROUTER_IP_ADDRESS=192.168.8.1 \
@@ -14,16 +14,25 @@ ENV HUAWEI_ROUTER_IP_ADDRESS=192.168.8.1 \
     DELAY_SECOND=10 \
     LOCALE=en_US
 
-WORKDIR /home
+ENV UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy
 
-COPY check-sms.py check-sms.py
-COPY locale locale
+WORKDIR /app
 
-RUN pip install --no-cache-dir huawei_lte_api python-dotenv && \
-    rm /home/locale/en/LC_MESSAGES/messages.pot && \
-    rm /home/locale/en_US/LC_MESSAGES/messages.pot && \
-    rm /home/locale/zh_CN/LC_MESSAGES/messages.pot && \
-    rm /home/locale/zh_HK/LC_MESSAGES/messages.pot && \
-    rm /home/locale/zh_TW/LC_MESSAGES/messages.pot
+# Install dependencies first for better layer caching
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-install-project
 
-CMD ["python3","/home/check-sms.py"]
+COPY check-sms.py ./
+COPY locale ./locale
+
+# Drop .pot template files — only the compiled .mo are needed at runtime
+RUN rm -f /app/locale/en/LC_MESSAGES/messages.pot \
+          /app/locale/en_US/LC_MESSAGES/messages.pot \
+          /app/locale/zh_CN/LC_MESSAGES/messages.pot \
+          /app/locale/zh_HK/LC_MESSAGES/messages.pot \
+          /app/locale/zh_TW/LC_MESSAGES/messages.pot
+
+ENV PATH="/app/.venv/bin:$PATH"
+
+CMD ["python", "check-sms.py"]
