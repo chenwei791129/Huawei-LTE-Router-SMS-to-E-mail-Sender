@@ -81,8 +81,11 @@ while True:
             time.sleep(DELAY_SECOND)
             continue
 
+        # huawei-lte-api >=1.6.10 returns a list even for a single message
+        message = sms['Messages']['Message'][0]
+
         # Skip this loop if the SMS was read
-        if int(sms['Messages']['Message']['Smstat']) == 1:
+        if int(message['Smstat']) == 1:
             # Logout
             client.user.logout()
             #Inspection interval(second)
@@ -90,12 +93,12 @@ while True:
             continue
 
         # Find a new SMS, go send e-mail！
-        print(_('{Date} Find a new SMS ID:{Message_Index}! from {Phone_Number}').format(Date=sms['Messages']['Message']['Date'], Message_Index=sms['Messages']['Message']['Index'], Phone_Number=sms['Messages']['Message']['Phone']))
+        print(_('{Date} Find a new SMS ID:{Message_Index}! from {Phone_Number}').format(Date=message['Date'], Message_Index=message['Index'], Phone_Number=message['Phone']))
 
         # send e-mail
         msg = MIMEMultipart()
-        msg['Subject'] = _('You have a message from {Phone_Number}').format(Phone_Number=sms['Messages']['Message']['Phone'])
-        body = _('Message date:{Date}\nMessage content：\n {Content}').format(Date=sms['Messages']['Message']['Date'], Content=sms['Messages']['Message']['Content'])
+        msg['Subject'] = _('You have a message from {Phone_Number}').format(Phone_Number=message['Phone'])
+        body = _('Message date:{Date}\nMessage content：\n {Content}').format(Date=message['Date'], Content=message['Content'])
         msg.attach(MIMEText(body, 'plain'))
 
         try:
@@ -106,9 +109,9 @@ while True:
             server.login(GMAIL_ACCOUNT, GMAIL_PASSWORD)
             server.sendmail(GMAIL_ACCOUNT, MAIL_RECIPIENT, msg.as_string())
             server.quit()
-            print(_('ID:{Message_Index} from {Phone_Number} was successfully sent!').format(Message_Index=sms['Messages']['Message']['Index'], Phone_Number=sms['Messages']['Message']['Phone']))
+            print(_('ID:{Message_Index} from {Phone_Number} was successfully sent!').format(Message_Index=message['Index'], Phone_Number=message['Phone']))
             # Set the SMS status was read
-            client.sms.set_read(int(sms['Messages']['Message']['Index']))
+            client.sms.set_read(int(message['Index']))
             # Logout
             client.user.logout()
         except Exception as e:
@@ -116,7 +119,7 @@ while True:
                 client.user.logout()
             except Exception as e:
                 continue
-            print(_('ID:{Message_Index} from {Phone_Number} failed to send! \nError message:\n{error_msg}').format(Message_Index=sms['Messages']['Message']['Index'], Phone_Number=sms['Messages']['Message']['Phone'], error_msg=e))
+            print(_('ID:{Message_Index} from {Phone_Number} failed to send! \nError message:\n{error_msg}').format(Message_Index=message['Index'], Phone_Number=message['Phone'], error_msg=e))
     except huawei_lte_api.exceptions.ResponseErrorLoginRequiredException as e:
         print(_('Session timeout, login again!'))
     except huawei_lte_api.exceptions.LoginErrorAlreadyLoginException as e:
