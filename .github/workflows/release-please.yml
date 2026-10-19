@@ -10,11 +10,13 @@ permissions:
   pull-requests: write
 
 jobs:
+  # Shared workflow: the pinned release-please SHA is maintained in
+  # chenwei791129/.github for every repository.
   release-please:
-    runs-on: ubuntu-26.04
-    steps:
-      - uses: googleapis/release-please-action@v5
-        id: release
-        with:
-          release-type: python
-          target-branch: master
+    permissions:
+      contents: write
+      pull-requests: write
+    uses: chenwei791129/.github/.github/workflows/release-please.yml@main
+    with:
+      release-type: python
+      target-branch: master
