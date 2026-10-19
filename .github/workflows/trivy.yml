@@ -1,0 +1,29 @@
+name: Trivy Security Scan
+
+# Scan with Trivy. Runs weekly (to catch newly-disclosed CVEs in unchanged
+# code and images) and on manual dispatch, plus on pull requests for the
+# repository scan.
+#
+# The scan itself lives in chenwei791129/.github so the pinned Trivy action
+# version is maintained in exactly one place across repositories.
+on:
+  pull_request:
+    branches:
+      - master
+  schedule:
+    # Weekly, Monday 06:17 UTC (offset minute to avoid cron congestion).
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+jobs:
+  # Dependency lockfiles in the repository.
+  repository:
+    permissions:
+      contents: read           # checkout the repository
+      security-events: write   # upload SARIF results to the Security tab
+    uses: chenwei791129/.github/.github/workflows/trivy-scan.yml@main
+    with:
+      scan-type: fs
+      scanners: vuln
+      severity: HIGH,CRITICAL
+      upload-sarif: true
